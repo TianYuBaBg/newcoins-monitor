@@ -48,6 +48,15 @@ h1{font-size:22px;font-weight:700;color:#e6edf3;margin-bottom:2px}
 .tutorial-link a{display:inline-flex;align-items:center;gap:6px;color:#58a6ff;font-size:13px;font-weight:500;text-decoration:none;padding:8px 16px;border:1px solid #30363d;border-radius:6px;transition:border-color .15s}
 .tutorial-link a:hover{border-color:#58a6ff}
 
+.to-section{margin-top:20px}
+.to-section .card{border-color:#2d1f4a}
+.to-section .coin-card{border-color:#3a2560;background:linear-gradient(135deg,#1f1530 0%,#161b22 100%)}
+.to-section .coin-card:hover{border-color:#a371f7;box-shadow:0 4px 20px rgba(163,113,247,0.1)}
+.to-section .pair .base{color:#a371f7}
+.to-section .badge-new{background:#6f42c1}
+.to-section .listing-date{background:#2a1a45;border-color:#3a2560}
+.to-section .source-badge{font-size:10px;color:#a371f7;background:#2a1a45;padding:2px 8px;border-radius:10px;font-weight:600;margin-left:6px}
+
 </style>
 </head>
 <body>
@@ -62,6 +71,21 @@ h1{font-size:22px;font-weight:700;color:#e6edf3;margin-bottom:2px}
     </div>
     <div class="last-updated" id="update-time"></div>
   </div>
+
+  <!-- TradeOgre 最新上线 -->
+  <div class="to-section">
+    <div class="card">
+      <div class="header-bar">
+        <h2 style="font-size:18px;color:#e6edf3;">TradeOgre 最新上线 <span class="sub">靠缓存差集自动发现新币对</span></h2>
+        <span id="to-count" style="font-size:12px;color:#8b949e;"></span>
+      </div>
+      <div class="coins-grid" id="to-grid">
+        <div class="empty-state">加载中...</div>
+      </div>
+      <div class="last-updated" id="to-update-time"></div>
+    </div>
+  </div>
+
   <div class="footer">
     QQ群 928023037 · 微信 wty_01_01 · 技术咨询 | 商务合作
   </div>
@@ -167,6 +191,46 @@ function renderCoins(data) {
   }
 }
 
+function renderTradeOgre(data) {
+  var grid = document.getElementById('to-grid');
+  if (!data || !data.tradeogre || data.tradeogre.length === 0) {
+    grid.innerHTML = '<div class="empty-state" style="color:#8b949e;">TradeOgre 暂无数据或 API 不可达</div>';
+    return;
+  }
+  document.getElementById('to-count').textContent = data.tradeogre.length + ' 个币对';
+  var html = '';
+  for (var i = 0; i < data.tradeogre.length; i++) {
+    var c = data.tradeogre[i];
+    var change = c.change || '—';
+    var isUp = change.startsWith('+');
+    var isDown = change.startsWith('-');
+    var changeCls = isUp ? 'up' : isDown ? 'down' : '';
+    var created = c.first_seen ? c.first_seen.slice(0, 10) : '—';
+    var recent = isRecent(c.first_seen);
+    var vol = fmtNum(c.volume);
+    var last = c.last || '—';
+    var high = c.high || '—';
+    var low = c.low || '—';
+
+    html += '<div class="coin-card">' +
+      (recent ? '<span class="badge-new">NEW</span>' : '') +
+      '<div class="pair"><span class="base">' + c.base + '</span><span class="quote">/' + c.quote + '</span></div>' +
+      '<div class="listing-date">发现 ' + created + '</div>' +
+      '<div class="price-row">' +
+        '<span class="price">' + last + '</span>' +
+        '<span class="change ' + changeCls + '">' + change + '</span>' +
+      '</div>' +
+      '<div class="spark"></div>' +
+      '<div class="meta">' +
+        '<div class="meta-item">成交量<div class="val">' + vol + '</div></div>' +
+        '<div class="meta-item">24h最高<div class="val">' + high + '</div></div>' +
+        '<div class="meta-item">24h最低<div class="val">' + low + '</div></div>' +
+      '</div>' +
+    '</div>';
+  }
+  grid.innerHTML = html;
+}
+
 function loadData() {
   var grid = document.getElementById('coins-grid');
   fetch('coins.json?t=' + Date.now())
@@ -174,9 +238,17 @@ function loadData() {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     })
-    .then(renderCoins)
+    .then(function(d) {
+      renderCoins(d);
+      renderTradeOgre(d);
+      if (d.updated) {
+        document.getElementById('update-time').textContent = '更新于 ' + d.updated;
+        document.getElementById('to-update-time').textContent = '更新于 ' + d.updated;
+      }
+    })
     .catch(function() {
       grid.innerHTML = '<div class="empty-state" style="color:#f85149;">网络错误</div>';
+      document.getElementById('to-grid').innerHTML = '<div class="empty-state" style="color:#8b949e;">网络错误</div>';
     });
 }
 
