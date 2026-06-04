@@ -38,7 +38,7 @@ def main():
     if markets and tickers:
         enabled = [m for m in markets if m.get("state") == "enabled"]
         enabled.sort(key=lambda m: m.get("created_at", ""), reverse=True)
-        for m in enabled[:5]:
+        for m in enabled[:6]:
             name = m.get("name", "")
             key = (m.get("base_unit", "") + m.get("quote_unit", "")).lower()
             t = tickers.get(key, {})
