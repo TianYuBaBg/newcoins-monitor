@@ -44,6 +44,26 @@ h1{font-size:22px;font-weight:700;color:#e6edf3;margin-bottom:2px}
 .service-desc{font-size:11px;color:#8b949e;line-height:1.5}
 .services-cta{text-align:center;font-size:13px;color:#e6edf3;margin-top:16px;padding-top:12px;border-top:1px solid #30363d}
 
+.tutorial{margin-top:24px;padding:20px;background:#161b22;border:1px solid #30363d;border-radius:10px}
+.tutorial-title{font-size:16px;font-weight:700;color:#e6edf3;margin-bottom:4px;text-align:center}
+.tutorial-sub{font-size:12px;color:#8b949e;text-align:center;margin-bottom:16px}
+.tutorial-step{background:#1a1f2e;border:1px solid #30363d;border-radius:8px;padding:16px;margin-bottom:12px}
+.tutorial-step:last-child{margin-bottom:0}
+.tutorial-step .step-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tutorial-step .step-num{background:#238636;color:#fff;font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tutorial-step .step-title{font-size:14px;font-weight:600;color:#e6edf3}
+.tutorial-step .step-body{font-size:12px;color:#c9d1d9;line-height:1.7;padding-left:32px}
+.tutorial-step .step-body code{background:#0d1117;color:#f0f6fc;padding:1px 6px;border-radius:3px;font-size:11px;font-family:monospace}
+.tutorial-step .step-body .hl{color:#58a6ff;font-weight:600}
+.tutorial-step .step-body .grn{color:#3fb950}
+.tutorial-step .step-body .tag{display:inline-block;background:#1f2a3f;color:#8b949e;font-size:10px;padding:1px 6px;border-radius:3px;margin-right:4px}
+.tutorial-step .step-body .warn{background:#3a2e1a;border-left:3px solid #d29922;padding:8px 12px;border-radius:4px;margin:8px 0;font-size:11px;color:#e6edf3}
+.tutorial-specs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0}
+.tutorial-spec{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:10px;text-align:center}
+.tutorial-spec .spec-val{font-size:18px;font-weight:700;color:#f0f6fc;font-family:monospace}
+.tutorial-spec .spec-lbl{font-size:10px;color:#8b949e;margin-top:2px}
+.tutorial-cta{text-align:center;font-size:12px;color:#8b949e;margin-top:16px;padding-top:12px;border-top:1px solid #30363d}
+
 </style>
 </head>
 <body>
@@ -89,6 +109,95 @@ h1{font-size:22px;font-weight:700;color:#e6edf3;margin-bottom:2px}
     </div>
     <div class="services-cta">
       有需求？加微信 <strong>wty_01_01</strong> 或 QQ群 <strong>928023037</strong> 详聊
+    </div>
+  </div>
+
+  <!-- PRL 挖矿教程 -->
+  <div class="tutorial">
+    <div class="tutorial-title">PRL (Pearl) GPU 挖矿教程</div>
+    <div class="tutorial-sub">实测配置 · 零基础起步 · 从矿池到交易所全流程</div>
+
+    <div class="tutorial-specs">
+      <div class="tutorial-spec"><div class="spec-val">~68 TH/s</div><div class="spec-lbl">实测算力</div></div>
+      <div class="tutorial-spec"><div class="spec-val">~220W</div><div class="spec-lbl">功耗</div></div>
+      <div class="tutorial-spec"><div class="spec-val">~66°C</div><div class="spec-lbl">GPU 温度</div></div>
+      <div class="tutorial-spec"><div class="spec-val">NoisyGEMM</div><div class="spec-lbl">算法</div></div>
+      <div class="tutorial-spec"><div class="spec-val">SafeTrade</div><div class="spec-lbl">上架交易所</div></div>
+    </div>
+
+    <div class="tutorial-step">
+      <div class="step-hdr"><span class="step-num">1</span><span class="step-title">准备钱包</span></div>
+      <div class="step-body">
+        PRL 是 Pearl 链的原生币，需要官方钱包才能接收挖矿收益。<br>
+        下载地址：<span class="hl">pearl.org/wallet</span>（Windows / Linux 版本均有）<br>
+        安装后创建新地址，格式示例：<br>
+        <code>prl1pwqwmgfnsfn2d78453v2p4sd8dewq09e9pjgc7jkwsqt4lxmcljgq9kuj8d</code><br>
+        记好助记词！这是恢复钱包的唯一凭证。
+      </div>
+    </div>
+
+    <div class="tutorial-step">
+      <div class="step-hdr"><span class="step-num">2</span><span class="step-title">注册矿池</span></div>
+      <div class="step-body">
+        推荐矿池：<span class="hl">AlphaPool</span> — <code>pearl.alphapool.tech</code><br>
+        访问矿池网站，用钱包地址注册账号，设置最小支付阈值（推荐 <span class="grn">10 PRL</span>）。<br>
+        矿池会实时显示你的算力、提交份额和待支付余额。
+      </div>
+    </div>
+
+    <div class="tutorial-step">
+      <div class="step-hdr"><span class="step-num">3</span><span class="step-title">下载挖矿软件</span></div>
+      <div class="step-body">
+        PRL 使用 <span class="hl">NoisyGEMM</span> 算法，推荐以下矿工：<br>
+        <span class="tag">Windows</span> <code>lolMiner</code> 或 <code>SRBMiner</code><br>
+        <span class="tag">Linux</span> <code>lolMiner</code>（推荐 WSL 环境运行）<br>
+        解压后找到配置文件或 batch 文件进行下一步设置。
+      </div>
+    </div>
+
+    <div class="tutorial-step">
+      <div class="step-hdr"><span class="step-num">4</span><span class="step-title">配置并启动挖矿</span></div>
+      <div class="step-body">
+        以 lolMiner 为例，创建启动脚本：
+        <div class="warn">
+          💡 Windows 用户建议在 <span class="hl">WSL (Ubuntu)</span> 下运行，稳定性更好。我们实测 GPU 跑在 WSL 环境下，连续运行数月无故障。
+        </div>
+        <code>./lolMiner --coin PRL --pool pearl.alphapool.tech:port --user 你的钱包地址</code><br>
+        启动后观察输出：<br>
+        <span class="grn">✓</span> 连接矿池成功 → 开始提交 shares<br>
+        <span class="grn">✓</span> 算力稳定在预期范围（参考：实测 <span class="hl">~68 TH/s</span>）<br>
+        <span class="grn">✓</span> GPU 温度 <span class="hl">~66°C</span>，功耗 <span class="hl">~220W</span>
+      </div>
+    </div>
+
+    <div class="tutorial-step">
+      <div class="step-hdr"><span class="step-num">5</span><span class="step-title">交易所卖币</span></div>
+      <div class="step-body">
+        PRL 已上线 <span class="hl">SafeTrade</span> 交易所，对交易对 <span class="hl">PRL/USDT</span>。<br>
+        步骤：<br>
+        1. 注册 SafeTrade（<code>safe.trade</code>），完成基础认证<br>
+        2. 矿池提现 → 填入 SafeTrade 充值地址（PRL 网络）<br>
+        3. 到账后在 PRL/USDT 市价或挂单卖出<br>
+        <div class="warn">
+          🚀 进阶：我们开发了 <span class="hl">自动卖币机器人</span>，到账自动市价卖出，无需手动操作。支持设置阶梯卖价（如 $1.50 卖 50%、$2.00 卖 80%）和止损价。
+        </div>
+      </div>
+    </div>
+
+    <div class="tutorial-step">
+      <div class="step-hdr"><span class="step-num">6</span><span class="step-title">收益监控（可选）</span></div>
+      <div class="step-body">
+        我们搭建了完整的 <span class="hl">挖矿监控面板</span>，可实时查看：<br>
+        &nbsp;&nbsp;• GPU 运行状态（算力、温度、功耗）<br>
+        &nbsp;&nbsp;• 矿池提交份额和预估收益<br>
+        &nbsp;&nbsp;• 当前币价和 24h 行情<br>
+        &nbsp;&nbsp;• 交易所余额，自动卖币记录<br>
+        全部自动化运行，异常自动告警。
+      </div>
+    </div>
+
+    <div class="tutorial-cta">
+      需要搭建同款挖矿系统？加微信 <strong>wty_01_01</strong> 或 QQ群 <strong>928023037</strong>，提供从矿机配置到自动卖币的全套方案。
     </div>
   </div>
 </div>
