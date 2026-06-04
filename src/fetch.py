@@ -71,6 +71,11 @@ def main():
     if os.path.exists(path_src_html):
         shutil.copy2(path_src_html, path_dst_html)
 
+    path_src_tutorial = os.path.join(SRC_DIR, "tutorial.html")
+    path_dst_tutorial = os.path.join(OUTPUT_DIR, "tutorial.html")
+    if os.path.exists(path_src_tutorial):
+        shutil.copy2(path_src_tutorial, path_dst_tutorial)
+
     count = len(coins)
     print(f"[OK] {count} coins -> {OUTPUT_DIR}")
 
