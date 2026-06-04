@@ -33,13 +33,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: 恢复 TradeOgre 缓存（差集检测新币用）
-        uses: actions/cache@v4
-        with:
-          path: tradeogre_cache.json
-          key: tradeogre-cache
-
-      - name: 抓取 SafeTrade + TradeOgre 数据
+      - name: 抓取 SafeTrade 新币数据
         run: python src/fetch.py
 
       - name: 配置 Pages

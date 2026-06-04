@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-SafeTrade 新币监控 + TradeOgre 差集检测 + PRL 挖矿教程的静态网页。每 5 分钟通过 GitHub Actions 抓取数据，部署到 GitHub Pages。
+SafeTrade 新币监控 + PRL 挖矿教程的静态网页。每 5 分钟通过 GitHub Actions 抓取 SafeTrade 最新上线币对行情，部署到 GitHub Pages。
 
 在线地址：https://tianyubabg.github.io/newcoins-monitor/
 
@@ -29,35 +29,21 @@ git add -A && git commit -m "message" && git push
 
 fetch.py 先从 markets 筛选 `state=enabled`，按 `created_at` 降序取前 6 个，再从 tickers 匹配行情。
 
-## TradeOgre 差集检测
-
-TradeOgre 原生 API 没有上架时间戳，采用**本地缓存差集**方式检测新币：
-
-1. **`tradeogre_cache.json`**（项目根目录，通过 GHA `actions/cache` 跨运行持久化）存储所有已知交易对及其首次发现时间
-2. 每次运行抓取 `/api/v1/markets` 全市场列表，与缓存对比，发现新交易对则记录当前时间
-3. 按首次发现时间降序取前 6 个展示，前 14 天内发现的打 `NEW` 标签
-4. 涨跌幅用 `initialprice`（上线价）与当前 `price` 计算总涨幅
-5. 如果 API 被 Cloudflare 拦截，静默跳过不影响 SafeTrade 数据
-
-TradeOgre 返回格式：`[{"BTC-XMR": {"initialprice":"...", "price":"...", "volume":"...", "high":"...", "low":"..."}}]`
-
 ## Architecture Notes
 
-- **数据流**: SafeTrade (API) + TradeOgre (API+cache diff) → GitHub Actions (cron 5min) → `_site/coins.json` → JS fetch 渲染
-- **前端**: 纯 HTML + inline CSS + vanilla JS，TradeOgre 用紫色主题区分于 SafeTrade 的蓝色
+- **数据流**: SafeTrade public API → GitHub Actions (cron 5min) → `_site/coins.json` → 浏览器 JS fetch 渲染
+- **前端**: 纯 HTML + inline CSS + vanilla JS（无框架、无构建工具、无 npm 依赖）
 - **后端**: GitHub Actions + Python（urllib 标准库，零 pip 依赖）
-- **缓存**: `tradeogre_cache.json` 通过 GHA actions/cache 持久化（key: `tradeogre-cache`），前端 fetch 追加 `?t=Date.now()` 防浏览器缓存
+- **缓存**: 前端 fetch URL 追加 `?t=Date.now()` 防浏览器缓存；GitHub Pages 默认 CDN 缓存 10 分钟
 - **fetch.py 双重角色**: 既是 cron 抓取脚本，也是本地构建脚本。运行后复制 `src/*.html` 到 `_site/` 并写入 `coins.json`
 - **时间处理**: `coins.json` 的 `updated` 字段使用 UTC+8（北京时间）；JS 中 `isRecent()` 判断上线是否 <=14 天
 
 ## 关键函数
 
 - `fetch.py:fetch_json()` — GET 请求 API，检查 content-type 和首字符是否为 `[` / `{` 以防被 CDN 拦截返回 HTML
-- `fetch.py:process_tradeogre()` — 抓取 TradeOgre 全市场，与缓存差集对比发现新币对，用 `initialprice` 算总涨跌幅
 - `index.html:fmtNum()` — 数字格式化：>=1M 显示 M、>=1K 显示 K、<0.001 显示 8 位、<1 显示 6 位、其他 2 位小数
 - `index.html:isRecent(dateStr)` — 判断上线日期是否在 14 天内，用于展示 NEW 标签
-- `index.html:loadData()` — 每 300 秒轮询 `coins.json`，同时渲染 SafeTrade 和 TradeOgre 区域
-- `index.html:renderTradeOgre(data)` — 渲染 TradeOgre 币对卡片，API 不可达时显示提示文字
+- `index.html:loadData()` — 每 300 秒轮询 `coins.json`，catch 网络错误展示错误提示
 
 ## 注意事项
 
