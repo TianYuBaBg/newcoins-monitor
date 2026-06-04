@@ -1,0 +1,49 @@
+name: 抓取新币数据并部署 Pages
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # 每 5 分钟执行一次
+  workflow_dispatch:          # 支持手动触发
+  push:
+    branches: [main]
+
+# 给 GitHub Pages 的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只运行一个部署
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  fetch-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 抓取 SafeTrade 新币数据
+        run: python src/fetch.py
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v4
+
+      - name: 上传产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
